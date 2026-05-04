@@ -13,6 +13,7 @@ import com.pennywiseai.tracker.data.database.dao.BudgetSnapshotDao
 import com.pennywiseai.tracker.data.database.dao.CardDao
 import com.pennywiseai.tracker.data.database.dao.CategoryDao
 import com.pennywiseai.tracker.data.database.dao.ChatDao
+import com.pennywiseai.tracker.data.database.dao.CustomParserRuleDao
 import com.pennywiseai.tracker.data.database.dao.ExchangeRateDao
 import com.pennywiseai.tracker.data.database.dao.LoanDao
 import com.pennywiseai.tracker.data.database.dao.TransactionGroupDao
@@ -67,7 +68,8 @@ object DatabaseModule {
                 PennyWiseDatabase.MIGRATION_38_39,
                 PennyWiseDatabase.MIGRATION_44_45,
                 PennyWiseDatabase.MIGRATION_45_46,
-                PennyWiseDatabase.MIGRATION_46_47
+                PennyWiseDatabase.MIGRATION_46_47,
+                PennyWiseDatabase.MIGRATION_47_48
             )
 
             // Enable auto-migrations
@@ -268,6 +270,12 @@ object DatabaseModule {
     @Singleton
     fun provideProfileDao(database: PennyWiseDatabase): ProfileDao {
         return database.profileDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCustomParserRuleDao(database: PennyWiseDatabase): CustomParserRuleDao {
+        return database.customParserRuleDao()
     }
 }
 
