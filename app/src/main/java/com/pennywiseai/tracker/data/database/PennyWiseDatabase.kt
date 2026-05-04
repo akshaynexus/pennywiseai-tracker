@@ -63,7 +63,7 @@ import com.pennywiseai.tracker.data.database.entity.UnrecognizedSmsEntity
  */
 @Database(
     entities = [TransactionEntity::class, SubscriptionEntity::class, ChatMessage::class, MerchantMappingEntity::class, CategoryEntity::class, AccountBalanceEntity::class, UnrecognizedSmsEntity::class, CardEntity::class, RuleEntity::class, RuleApplicationEntity::class, ExchangeRateEntity::class, BudgetEntity::class, BudgetCategoryEntity::class, BudgetMonthSnapshotEntity::class, BudgetCategoryMonthSnapshotEntity::class, TransactionSplitEntity::class, BankNotificationEntity::class, LoanEntity::class, TransactionGroupEntity::class, ProfileEntity::class, CustomParserRuleEntity::class],
-    version = 48,
+    version = 49,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
@@ -104,9 +104,8 @@ import com.pennywiseai.tracker.data.database.entity.UnrecognizedSmsEntity
         AutoMigration(from = 39, to = 40),
         AutoMigration(from = 40, to = 41),
         AutoMigration(from = 41, to = 42),
-        AutoMigration(from = 42, to = 43),
         AutoMigration(from = 43, to = 44, spec = Migration43To44::class)
-        // 44→45, 45→46, 46→47 and 47→48 are manual migrations registered in DatabaseModule.
+        // 44→45 through 48→49 are manual migrations registered in DatabaseModule.
     ]
 )
 @TypeConverters(Converters::class)
@@ -163,7 +162,8 @@ abstract class PennyWiseDatabase : RoomDatabase() {
                         MIGRATION_44_45,
                         MIGRATION_45_46,
                         MIGRATION_46_47,
-                        MIGRATION_47_48
+                        MIGRATION_47_48,
+                        MIGRATION_48_49
                     )
                     .build()
                 INSTANCE = instance
@@ -474,6 +474,12 @@ abstract class PennyWiseDatabase : RoomDatabase() {
                 """.trimIndent())
                 db.execSQL("CREATE INDEX IF NOT EXISTS `index_custom_parser_rules_priority_is_active` ON `custom_parser_rules` (`priority`, `is_active`)")
                 db.execSQL("CREATE INDEX IF NOT EXISTS `index_custom_parser_rules_name` ON `custom_parser_rules` (`name`)")
+            }
+        }
+
+        val MIGRATION_48_49 = object : Migration(48, 49) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE `custom_parser_rules` ADD COLUMN `tags_json` TEXT DEFAULT NULL")
             }
         }
 
