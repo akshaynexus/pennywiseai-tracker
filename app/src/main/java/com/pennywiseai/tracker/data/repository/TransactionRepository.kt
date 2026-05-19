@@ -7,6 +7,7 @@ import com.pennywiseai.tracker.data.database.entity.TransactionSplitEntity
 import com.pennywiseai.tracker.data.database.entity.TransactionType
 import com.pennywiseai.tracker.data.database.entity.TransactionWithSplits
 import com.pennywiseai.tracker.data.manager.TransactionDeduplication
+import com.pennywiseai.tracker.data.statement.StatementTransactionEnricher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.math.BigDecimal
@@ -153,6 +154,14 @@ class TransactionRepository @Inject constructor(
             candidate.id != transaction.id &&
                     TransactionDeduplication.isSameUpiTransaction(candidate, transaction)
         }
+    }
+
+    suspend fun findStatementMergeCandidate(transaction: TransactionEntity): TransactionEntity? {
+        val reference = transaction.reference?.takeIf { it.isNotBlank() } ?: return null
+        return transactionDao.getTransactionsByReference(reference)
+            .firstOrNull { candidate ->
+                StatementTransactionEnricher.isStatementMatch(candidate, transaction)
+            }
     }
 
     suspend fun getTransactionByAmountAndDate(
