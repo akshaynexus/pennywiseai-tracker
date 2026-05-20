@@ -108,6 +108,9 @@
 # SLF4J (used by OpenCSV)
 -dontwarn org.slf4j.impl.StaticLoggerBinder
 
+# Ktor debug detection references JVM-only management APIs.
+-dontwarn java.lang.management.**
+
 # PDFBox Android (used for PDF statement parsing)
 -keep class com.tom_roush.pdfbox.** { *; }
 -dontwarn com.tom_roush.pdfbox.filter.JPXFilter
